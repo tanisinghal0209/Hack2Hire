@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@600;700;800&display=swap');
+
+:root {
+  /* Colors */
+  --bg-primary: #0D0D0F;
+  --bg-secondary: #141419;
+  --bg-tertiary: #1C1C24;
+  --accent-blue: #00D4FF;
+  --accent-blue-glow: rgba(0, 212, 255, 0.15);
+  --accent-amber: #FFB800;
+  --accent-amber-glow: rgba(255, 184, 0, 0.15);
+  --text-white: #FFFFFF;
+  --text-muted: #8F9CAE;
+  --border-cyber: #23232C;
+  --border-active: #00D4FF;
+  --red-alert: #FF3B30;
+  --red-glow: rgba(255, 59, 48, 0.2);
+
+  /* Component Library Tokens */
+  --bg-card: #141418;
+  --bg-elevated: #1C1C22;
+  --accent-green: #00FF88;
+  --accent-red: #FF4444;
+  --text-primary: #FFFFFF;
+  --text-secondary: #8888AA;
+  --border: #2A2A35;
+
+  /* Fonts */
+  --font-headings: 'Syne', sans-serif;
+  --font-data: 'Space Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-white);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blue);
+}
+
+/* Custom terminal scanlines overlay */
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 9999;
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Global Headings */
+h1, h2, h3, h4 {
+  font-family: var(--font-headings);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Data, code, numbers */
+.data-font {
+  font-family: var(--font-data);
+}
+
+/* Cyber Box (Glow border) */
+.cyber-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-cyber);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cyber-card.active {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 15px var(--accent-blue-glow);
+}
+
+.cyber-card.warning {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 15px var(--accent-amber-glow);
+}
+
+/* Cyber Button */
+.cyber-btn {
+  background: transparent;
+  color: var(--text-white);
+  border: 1px solid var(--accent-blue);
+  padding: 10px 20px;
+  font-family: var(--font-data);
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px var(--accent-blue-glow);
+}
+
+.cyber-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+  transition: all 0.5s ease;
+}
+
+.cyber-btn:hover::before {
+  left: 100%;
+}
+
+.cyber-btn:hover {
+  background-color: var(--accent-blue);
+  color: var(--bg-primary);
+  box-shadow: 0 0 15px var(--accent-blue);
+  text-shadow: none;
+}
+
+.cyber-btn:disabled {
+  border-color: var(--bg-tertiary);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.cyber-btn.amber {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 8px var(--accent-amber-glow);
+}
+
+.cyber-btn.amber:hover {
+  background-color: var(--accent-amber);
+  color: var(--bg-primary);
+  box-shadow: 0 0 15px var(--accent-amber);
+}
+
+/* Cyber Inputs */
+.cyber-input {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-cyber);
+  color: var(--text-white);
+  padding: 12px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.cyber-input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 10px var(--accent-blue-glow);
+}
+
+.cyber-input-mono {
+  composes: cyber-input;
+  font-family: var(--font-data);
+}
+
+/* Animations */
+@keyframes pulse-amber {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--accent-amber);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 2px var(--accent-amber-glow);
+  }
+}
+
+.pulse-warning {
+  animation: pulse-amber 2s infinite ease-in-out;
+}
+
+@keyframes text-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: text-blink 1s infinite;
+}
+
+/* Grid & Layout Utilities */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.status-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-cyber);
+  border-radius: 4px;
+  font-family: var(--font-data);
+  font-size: 13px;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-blue);
+  box-shadow: 0 0 8px var(--accent-blue);
+}
+
+.status-indicator.running {
+  background-color: #00FF66;
+  box-shadow: 0 0 8px #00FF66;
+}
+
+.status-indicator.terminated {
+  background-color: var(--red-alert);
+  box-shadow: 0 0 8px var(--red-alert);
+}
+
+/* Main Dashboard Panel */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  flex: 1;
+  gap: 20px;
+  min-height: 0; /* allows child scrolling */
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.preset-card:hover {
+  border-color: var(--accent-blue) !important;
+  background-color: var(--bg-secondary) !important;
+  box-shadow: 0 0 10px var(--accent-blue-glow);
+}
+
+@media (max-width: 1024px) {
+  /* Stack grid layout vertically on tablets and small laptops */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
