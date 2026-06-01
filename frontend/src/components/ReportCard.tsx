@@ -6,11 +6,12 @@ import type { FinalReportResponse, InterviewHistoryEntry } from '../../../backen
 interface ReportCardProps {
   report: FinalReportResponse | null;
   candidateName: string;
+  candidateAvatar: string;
   history: InterviewHistoryEntry[];
   onRestart: () => void;
 }
 
-export const ReportCard: React.FC<ReportCardProps> = ({ report, candidateName, history, onRestart }) => {
+export const ReportCard: React.FC<ReportCardProps> = ({ report, candidateName, candidateAvatar, history, onRestart }) => {
   if (!report) return null;
 
   const { overall_score, skill_breakdown, strengths, weaknesses, recommendations, hiring_readiness } = report;
@@ -192,6 +193,12 @@ export const ReportCard: React.FC<ReportCardProps> = ({ report, candidateName, h
               <span className="data-font" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>INDEX SCORE</span>
             </div>
           </div>
+
+          <img 
+            src={candidateAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop'} 
+            alt="Candidate Photo" 
+            style={styles.summaryAvatar} 
+          />
 
           <div style={styles.recBox}>
             <div style={styles.recSubtitle}>READINESS EVALUATION SUMMARY</div>
@@ -399,6 +406,14 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: '30px'
+  },
+  summaryAvatar: {
+    width: '100px',
+    height: '100px',
+    borderRadius: '4px',
+    border: '1px solid var(--border-cyber)',
+    objectFit: 'cover',
+    backgroundColor: '#070709'
   },
   gaugeContainer: {
     position: 'relative',

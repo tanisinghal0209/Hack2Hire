@@ -13,6 +13,7 @@ function App() {
   const [isSimulated, setIsSimulated] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [candidateName, setCandidateName] = useState('Candidate');
+  const [candidateAvatar, setCandidateAvatar] = useState('');
   const [jobDescriptionText, setJobDescriptionText] = useState('');
   const [resumeData, setResumeData] = useState<any>(null);
   
@@ -42,9 +43,10 @@ function App() {
       });
   }, []);
 
-  const handleStartInterview = async (name: string, jobDescription: string, resumeFile: File | null, resumeText: string) => {
+  const handleStartInterview = async (name: string, jobDescription: string, resumeFile: File | null, resumeText: string, avatarUrl: string) => {
     setLoading(true);
     setCandidateName(name || 'Candidate');
+    setCandidateAvatar(avatarUrl || '');
     setJobDescriptionText(jobDescription);
     try {
       const formData = new FormData();
@@ -234,6 +236,9 @@ function App() {
           onSubmitAnswer={handleSubmitAnswer}
           loading={loading}
           history={history}
+          candidateName={candidateName}
+          candidateAvatar={candidateAvatar}
+          resumeData={resumeData}
         />
       )}
 
@@ -241,6 +246,7 @@ function App() {
         <ReportCard 
           report={report} 
           candidateName={candidateName} 
+          candidateAvatar={candidateAvatar}
           history={history}
           onRestart={handleRestart} 
         />

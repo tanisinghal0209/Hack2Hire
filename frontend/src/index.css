@@ -213,6 +213,18 @@ h1, h2, h3, h4 {
   animation: text-blink 1s infinite;
 }
 
+@keyframes waveGlow {
+  0% {
+    transform: scaleY(0.2);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scaleY(1.0);
+    opacity: 1.0;
+  }
+}
+
+
 /* Grid & Layout Utilities */
 .app-container {
   display: flex;

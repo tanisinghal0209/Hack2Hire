@@ -7,7 +7,7 @@ import mammoth from 'mammoth';
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface SetupScreenProps {
-  onStart: (name: string, jobDescription: string, resumeFile: File | null, resumeText: string) => Promise<void>;
+  onStart: (name: string, jobDescription: string, resumeFile: File | null, resumeText: string, avatarUrl: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -134,6 +134,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStart, loading }) =>
   const [jobDescription, setJobDescription] = useState(TEMPLATES[0].desc);
   const [file, setFile] = useState<File | null>(null);
   const [resumeText, setResumeText] = useState('');
+  const [avatar, setAvatar] = useState<string>('');
   const [dragActive, setDragActive] = useState(false);
   
   // Analysis state
@@ -214,12 +215,25 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStart, loading }) =>
     }
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const uploadedFile = e.target.files[0];
       setFile(uploadedFile);
       setResumeText('');
       setAnalyzedData(null);
+    }
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const imgFile = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setAvatar(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(imgFile);
     }
   };
 
@@ -242,7 +256,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStart, loading }) =>
     }
 
     await new Promise((r) => setTimeout(r, 300));
-    await onStart(analyzedData?.name || 'Candidate', jobDescription, file, resumeText);
+    await onStart(analyzedData?.name || 'Candidate', jobDescription, file, resumeText, avatar);
     setBooting(false);
   };
 
@@ -263,7 +277,33 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStart, loading }) =>
         <div className={`cyber-card ${file ? 'active' : ''}`} style={styles.card}>
           <div style={styles.cardHeader}>
             <Upload size={18} color="var(--accent-blue)" />
-            <span style={styles.cardTitle}>UPLOAD RESUME</span>
+            <span style={styles.cardTitle}>UPLOAD RESUME & PROFILE</span>
+          </div>
+
+          {/* Profile Picture Uploader */}
+          <div style={styles.avatarUploadContainer}>
+            <div style={{ position: 'relative' }}>
+              <img 
+                src={avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop'} 
+                alt="Candidate Avatar" 
+                style={styles.avatarImage} 
+              />
+              <input 
+                type="file" 
+                id="avatar-upload" 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                onChange={handleAvatarChange}
+                disabled={loading || booting}
+              />
+              <label htmlFor="avatar-upload" style={styles.avatarUploadLabel}>
+                +
+              </label>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-white)', fontWeight: 'bold' }}>UPLOAD CANDIDATE PHOTO</span>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Click "+" to select profile picture (Optional)</span>
+            </div>
           </div>
 
           <div 
@@ -462,6 +502,39 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: 'column',
     gap: '15px',
     backgroundColor: '#0F0F13'
+  },
+  avatarUploadContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '15px',
+    paddingBottom: '10px',
+    borderBottom: '1px solid var(--border-cyber)',
+    marginBottom: '10px'
+  },
+  avatarImage: {
+    width: '60px',
+    height: '60px',
+    borderRadius: '4px',
+    border: '1px solid var(--accent-blue)',
+    objectFit: 'cover',
+    backgroundColor: 'var(--bg-tertiary)'
+  },
+  avatarUploadLabel: {
+    position: 'absolute',
+    bottom: '-5px',
+    right: '-5px',
+    width: '20px',
+    height: '20px',
+    borderRadius: '50%',
+    backgroundColor: 'var(--accent-blue)',
+    color: 'var(--bg-primary)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    boxShadow: '0 0 5px var(--accent-blue-glow)'
   },
   cardHeader: {
     display: 'flex',

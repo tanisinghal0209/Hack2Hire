@@ -11,6 +11,9 @@ interface TerminalProps {
   onSubmitAnswer: (answer: string, timeSpent: number) => Promise<void>;
   loading: boolean;
   history: any[];
+  candidateName: string;
+  candidateAvatar: string;
+  resumeData: any;
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
@@ -22,7 +25,10 @@ export const Terminal: React.FC<TerminalProps> = ({
   timeLimit,
   onSubmitAnswer,
   loading,
-  history
+  history,
+  candidateName,
+  candidateAvatar,
+  resumeData
 }) => {
   const [answer, setAnswer] = useState('');
   const [timeLeft, setTimeLeft] = useState(timeLimit);
@@ -232,6 +238,64 @@ export const Terminal: React.FC<TerminalProps> = ({
     return null;
   };
 
+  // Simple CSS wave visualizer bars
+  const WaveformVisualizer = () => {
+    const barsLeft = [20, 45, 30, 60, 40, 80, 50, 65, 35, 55];
+    const barsRight = [55, 35, 65, 50, 80, 40, 60, 30, 45, 20];
+
+    return (
+      <div style={styles.voicePanel}>
+        <div className="data-font" style={styles.voiceBadge}>
+          <Mic size={12} color="var(--accent-blue)" style={{ marginRight: '6px' }} />
+          <span>VOICE: ACTIVE</span>
+        </div>
+        <div style={styles.visualizerRow}>
+          {/* Left wave bars */}
+          <div style={styles.waveContainer}>
+            {barsLeft.map((height, i) => (
+              <div 
+                key={`l-${i}`} 
+                style={{ 
+                  ...styles.waveBar, 
+                  height: `${height}%`, 
+                  backgroundColor: 'var(--accent-blue)',
+                  animation: `waveGlow 0.8s ease-in-out infinite alternate ${i * 0.08}s`
+                }} 
+              />
+            ))}
+          </div>
+
+          {/* Glowing Microphone Button */}
+          <button 
+            style={styles.micCircle}
+            onClick={() => setIsVoiceActive(false)}
+            title="Disable microphone"
+          >
+            <Mic size={22} color="var(--bg-primary)" />
+          </button>
+
+          {/* Right wave bars */}
+          <div style={styles.waveContainer}>
+            {barsRight.map((height, i) => (
+              <div 
+                key={`r-${i}`} 
+                style={{ 
+                  ...styles.waveBar, 
+                  height: `${height}%`, 
+                  backgroundColor: 'var(--accent-amber)',
+                  animation: `waveGlow 0.8s ease-in-out infinite alternate ${i * 0.08}s`
+                }} 
+              />
+            ))}
+          </div>
+        </div>
+        <div style={{ fontSize: '10px', color: 'var(--accent-amber)', fontFamily: 'var(--font-data)' }} className="pulse-warning">
+          TRANSCRIPT PIPELINE RUNNING...
+        </div>
+      </div>
+    );
+  };
+
   const alertBanner = getLastPerformanceAlert();
 
   // Early termination warning
@@ -248,18 +312,33 @@ export const Terminal: React.FC<TerminalProps> = ({
             <User size={16} color="var(--accent-blue)" />
             <span>CANDIDATE DOSSIER</span>
           </div>
+          
+          <div style={styles.dossierHeader}>
+            <img 
+              src={candidateAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop'} 
+              alt="Avatar" 
+              style={styles.dossierAvatar} 
+            />
+            <div style={styles.dossierMeta}>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 'bold' }}>CANDIDATE</span>
+              <span className="data-font" style={styles.dossierName}>
+                {candidateName}
+              </span>
+            </div>
+          </div>
+
           <div style={styles.dossierContent}>
             <div style={styles.dossierItem}>
-              <span style={styles.dossierLabel}>NAME:</span>
-              <span className="data-font" style={styles.dossierValue}>John Doe</span>
-            </div>
-            <div style={styles.dossierItem}>
-              <span style={styles.dossierLabel}>ROLE INTENT:</span>
-              <span style={styles.dossierValue}>Software Architect</span>
+              <span style={styles.dossierLabel}>EST. EXP:</span>
+              <span style={styles.dossierValue}>
+                {resumeData?.experience_years !== undefined ? `${resumeData.experience_years} Years` : '3 Years'}
+              </span>
             </div>
             <div style={styles.dossierItem}>
               <span style={styles.dossierLabel}>MATCH FACTOR:</span>
-              <span className="data-font" style={{ ...styles.dossierValue, color: '#00FF66' }}>86% Match</span>
+              <span className="data-font" style={{ ...styles.dossierValue, color: '#00FF66' }}>
+                {resumeData?.role_match_score !== undefined ? `${resumeData.role_match_score}% Match` : '86% Match'}
+              </span>
             </div>
           </div>
         </div>
@@ -363,6 +442,9 @@ export const Terminal: React.FC<TerminalProps> = ({
               {typedQuestion.length < question.length && <span className="cursor-blink">_</span>}
             </div>
           </div>
+
+          {/* Voice Waveform Panel (renders when isVoiceActive is true) */}
+          {isVoiceActive && <WaveformVisualizer />}
 
           {/* Text Area */}
           <div style={styles.inputArea}>
@@ -636,6 +718,32 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--text-muted)',
     textTransform: 'uppercase'
   },
+  dossierHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    paddingBottom: '10px',
+    borderBottom: '1px solid var(--border-cyber)',
+    marginBottom: '8px'
+  },
+  dossierAvatar: {
+    width: '45px',
+    height: '45px',
+    borderRadius: '4px',
+    border: '1px solid var(--accent-blue)',
+    objectFit: 'cover',
+    backgroundColor: 'var(--bg-tertiary)'
+  },
+  dossierMeta: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px'
+  },
+  dossierName: {
+    fontSize: '13px',
+    fontWeight: 'bold',
+    color: 'var(--text-white)'
+  },
   dossierContent: {
     display: 'flex',
     flexDirection: 'column',
@@ -652,6 +760,62 @@ const styles: Record<string, React.CSSProperties> = {
   },
   dossierValue: {
     color: 'var(--text-white)'
+  },
+  voicePanel: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '10px',
+    padding: '20px',
+    backgroundColor: '#0F0F13',
+    borderBottom: '1px solid var(--border-cyber)',
+    flexShrink: 0
+  },
+  voiceBadge: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '11px',
+    fontWeight: 'bold',
+    padding: '4px 10px',
+    border: '1px solid var(--accent-blue)',
+    borderRadius: '3px',
+    color: 'var(--accent-blue)',
+    backgroundColor: 'rgba(0, 212, 255, 0.05)'
+  },
+  visualizerRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '25px',
+    width: '100%'
+  },
+  waveContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '3px',
+    height: '40px',
+    width: '120px',
+    justifyContent: 'center'
+  },
+  waveBar: {
+    width: '3px',
+    borderRadius: '2px',
+    minHeight: '4px',
+    transition: 'height 0.15s ease'
+  },
+  micCircle: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '50%',
+    backgroundColor: 'var(--accent-blue)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 0 15px var(--accent-blue-glow)',
+    transition: 'all 0.3s ease'
   },
   metricsBox: {
     display: 'flex',
