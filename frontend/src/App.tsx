@@ -5,7 +5,7 @@ import { Terminal } from './components/Terminal';
 import { ReportCard } from './components/ReportCard';
 import type { FinalReportResponse, InterviewHistoryEntry } from '../../backend/src/types';
 
-const API_BASE = 'http://localhost:5001/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
 
 function App() {
   const [status, setStatus] = useState<'setup' | 'ongoing' | 'terminated' | 'completed'>('setup');
@@ -33,13 +33,14 @@ function App() {
 
   // Ping backend on boot to check mode
   useEffect(() => {
-    fetch('http://localhost:5001/health')
+    const rootUrl = API_BASE.replace('/api', '');
+    fetch(`${rootUrl}/health`)
       .then(res => res.json())
       .then(data => {
         console.log('Backend connected. System Health check: OK.', data);
       })
       .catch(err => {
-        console.warn('Backend is offline. Run "npm run dev" in the backend directory.', err);
+        console.warn('Backend is offline. Check VITE_API_BASE_URL or run backend locally.', err);
       });
   }, []);
 

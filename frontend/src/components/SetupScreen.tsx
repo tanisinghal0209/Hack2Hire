@@ -149,6 +149,7 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStart, loading }) =>
     const triggerAnalysis = async () => {
       if (!file && !resumeText.trim()) return;
       if (!jobDescription.trim()) return;
+      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
       setAnalyzing(true);
       try {
         let response;
@@ -156,12 +157,12 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStart, loading }) =>
           const formData = new FormData();
           formData.append('resume', file);
           formData.append('jobDescription', jobDescription);
-          response = await fetch('http://localhost:5001/api/analyze', {
+          response = await fetch(`${apiBase}/analyze`, {
             method: 'POST',
             body: formData
           });
         } else {
-          response = await fetch('http://localhost:5001/api/analyze', {
+          response = await fetch(`${apiBase}/analyze`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
