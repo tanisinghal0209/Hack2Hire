@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Upload, FileText, ChevronRight, Terminal as TerminalIcon, Brain, Cpu } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
-import mammoth from 'mammoth';
 
 // Set up PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
