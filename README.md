@@ -1,37 +1,36 @@
-# Hack2Hire — AI-Powered Mock Interview Platform
+# Hack2Hire: AI-Powered Mock Interview Platform
 
-![Hack2Hire Project Banner](https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop)
-*Banner: A dark themed, futuristic, high-contrast digital war room terminal showing compiled skill metrics with the title "Hack2Hire — AI Mock Interview Platform".*
-
----
-
-### 💡 The Problem It Solves
-Technical candidates struggle to practice for interviews under realistic, high-pressure constraints that mimic the adaptive questioning of senior engineering managers. Hack2Hire solves this by providing a premium, dark-themed "war room" dashboard where an AI interviewer adapts difficulty dynamically in real-time, penalizes slow responders, and evaluates answers on technical depth and communication clarity.
+Hack2Hire is a production-grade mock interview simulator that models the behavior of a senior engineering manager. It uses dynamic LLM-based prompting to assess technical candidates in real-time under adaptive difficulty constraints, strict pacing limits, and automatic exit conditions.
 
 ---
 
-### 🚀 Tech Stack Badges
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
-![Claude API](https://img.shields.io/badge/Claude%203.5%20Sonnet-D97706?style=for-the-badge&logo=anthropic&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+### The Problem It Solves
+Technical candidates struggle to practice for interviews under realistic, high-pressure constraints that mimic the adaptive questioning of senior engineering managers. Hack2Hire solves this by providing a premium digital terminal where an AI interviewer adapts difficulty dynamically in real-time, penalizes slow responders, and evaluates answers on technical depth and communication clarity.
 
 ---
 
-### 🌟 Key Features
-- **📄 Client-Side Resume Parsing**: Instantly read PDF, DOCX, or text resume files locally on your browser (powered by `pdf.js` and `mammoth.js`).
-- **🎯 Dynamic Profile Match**: Evaluates your background against target JDs to identify matching skills, estimated experience, and role fit % before starting.
-- **⚡ Adaptive Questioning**: AI interviewer escalates difficulty to `hard` if you answer exceptionally well (scores > 75) and downscales to `easy` if scores drop.
-- **⏱️ Strict Time Constraints**: Countdown timer circle (SVG) turns red and pulses in the last 15s. Running overtime applies a server-side penalty of 0.5 points per second.
-- **🧠 5-Metric Scoring Engine**: Scores responses out of 100 based on Accuracy (25), Clarity (20), Depth (25), Relevance (20), and Time Efficiency (10).
-- **🚨 Emergency Termination**: Halts sessions immediately if performance drops below 35% for 3 consecutive questions or if 2 consecutive answers are empty.
-- **📊 Circular Score Gauge & Sparklines**: Beautiful animated dashboard showing difficulty trajectory sparklines, chronological timeline reviews, and action plan steps.
-- **📋 PDF Report Exporter**: Download your final assessment scorecard as a PDF document with a single click.
+### Tech Stack
+* **Frontend**: React (Vite), TypeScript, Custom HSL Hues/CSS Variables
+* **Backend**: Node.js, Express, TypeScript, Multer, PDF-Parse
+* **AI Engine**: Anthropic Claude API (claude-3-5-sonnet-20241022)
+* **Libraries**: jsPDF (Scorecard Exports), Lucide React (HUD Icons)
 
 ---
 
-### 🛠️ Architecture Diagram
+### Key Features
+* **Resume Document Extraction**: Seamless server-side PDF text extraction using Multer and pdf-parse, bypassing browser sandboxing limits.
+* **Dynamic Profile Calibration**: Automated scanning matching candidates' resumes against target JDs to identify matching skills, estimated experience, and role fit % before starting.
+* **Adaptive Questioning**: AI interviewer escalates difficulty to "hard" if candidate answers exceptionally well (scores > 75) and downscales to "easy" if scores drop.
+* **Strict Time Constraints**: Circular countdown timer (SVG) turns red and pulses in the last 15s. Running overtime applies a server-side penalty of 0.5 points per second.
+* **5-Metric Scoring Engine**: Scores responses out of 100 based on Accuracy (25), Clarity (20), Depth (25), Relevance (20), and Time Efficiency (10).
+* **Emergency Termination**: Halts sessions immediately if performance drops below 35% for 3 consecutive questions or if 2 consecutive answers are empty.
+* **Hands-free Voice Typing**: Real-time microphone listening via standard browser Speech Recognition API, typing out spoken answers automatically.
+* **circular Score Gauge & Sparklines**: Beautiful dashboard showing difficulty trajectory sparklines, chronological timeline reviews, and action plan steps.
+* **PDF Report Exporter**: Download the final assessment scorecard as a multi-page PDF document with a single click.
+
+---
+
+### Architecture Diagram
 
 ```mermaid
 graph TD
@@ -41,7 +40,7 @@ graph TD
     D --> E[Submit: POST /api/evaluate-answer]
     E --> F{Termination check: Consecutive low/empty scores?}
     F -- Yes --> G[Early Termination Modal]
-    F -- No --> H{Question Index >= 10?}
+    F -- No --> H{Question Index >= 6?}
     H -- Yes --> I[POST /api/final-report]
     H -- No --> J[POST /api/get-question - Adaptive check]
     J --> D
@@ -51,13 +50,13 @@ graph TD
 
 ---
 
-### 📝 Setup Instructions
+### Setup Instructions
 
 #### 1. Clone the repository and install dependencies
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/hack2hire.git
-cd hack2hire
+git clone https://github.com/tanisinghal0209/Hack2Hire.git
+cd Hack2Hire
 
 # Install backend dependencies
 cd backend
@@ -93,16 +92,16 @@ npm run dev
 
 ---
 
-### 🔄 How It Works (5-Step Flow)
+### How It Works (5-Step Flow)
 1. **Dossier Calibration**: Candidate uploads their resume and pastes a Job Description.
 2. **Analysis Handshake**: The engine extracts name, experience, matching skills, and matches qualifications against JD parameters.
 3. **Adaptive Question Pipeline**: The platform fires the first question (Technical). The timer starts ticking.
 4. **Answer Evaluation**: The candidate types their code or explanation. Upon submission, Claude grades the text and calibrates next question difficulty.
-5. **Scorecard Compilation**: Once 10 questions are completed (or early termination is triggered), the system compiles a detailed breakdown with a PDF download option.
+5. **Scorecard Compilation**: Once 6 questions are completed (or early termination is triggered), the system compiles a detailed breakdown with a PDF download option.
 
 ---
 
-### 📊 Scoring System Explanation
+### Scoring System Explanation
 
 | Criteria | Weight | Notes |
 |----------|--------|-------|
@@ -116,19 +115,18 @@ npm run dev
 
 ---
 
-### 📸 Screenshots
-*(Screenshot placeholders showing the Landing configure screen, Live terminal panel, and Final Assessment dashboard)*
-- [Landing / Uploader Screen Preview](https://via.placeholder.com/600x350/0D0D0F/00D4FF?text=Hack2Hire+Landing+Screen)
-- [Live Terminal HUD Screen Preview](https://via.placeholder.com/600x350/0D0D0F/FFB800?text=Hack2Hire+Live+Terminal+HUD)
-- [Final Report Card Screen Preview](https://via.placeholder.com/600x350/0D0D0F/00FF88?text=Hack2Hire+Final+Report+Card)
+### Screenshots
+
+#### Configuration & Setup Screen
+![Setup Screen](screenshots/setup_screen.png)
+
+#### Live Interview Terminal HUD
+![Live Terminal HUD](screenshots/interview_terminal.png)
+
+#### Final Report Card Assessment Dashboard
+![Report Card Assessment](screenshots/report_dashboard.png)
 
 ---
 
-### 🎥 Video Demo
-*(Place screen recording link here)*
-- [Hack2Hire Live Walkthrough Demo Video](https://via.placeholder.com/600x350/0D0D0F/FFFFFF?text=Hack2Hire+Video+Walkthrough+Demo)
-
----
-
-### ⚖️ License
+### License
 This project is licensed under the MIT License - see the LICENSE file for details.
